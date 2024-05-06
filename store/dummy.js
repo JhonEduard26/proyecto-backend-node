@@ -1,27 +1,38 @@
 const db = {
   'user': [
     {
-      id: 1,
+      id: crypto.randomUUID(),
       name: 'Jhon'
     }
   ]
 }
 
-function get(table, id) {
-  let col = list(table)
+async function get(table, id) {
+  let col = await list(table)
   return col.find(item => item.id === id) || null
 }
 
-function list(table) {
+async function list(table) {
   return db[table]
 }
 
-function upsert(table, data) {
-  db[collection].push(data)
+async function upsert(table, data) {
+  const newUser = {
+    id: crypto.randomUUID(),
+    name: data.name  
+  }
+
+  db[table].push(newUser)
 }
 
-function remove(table, id) {
-  return true
+async function remove(table, id) {
+  const user = await get(table, id)
+
+  if (!user) {
+    throw new Error('User not found')
+  }
+
+  db[table] = db[table].filter(item => item.id !== id)
 }
 
 module.exports = {
