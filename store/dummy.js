@@ -2,7 +2,8 @@ const db = {
   'user': [
     {
       id: crypto.randomUUID(),
-      name: 'Jhon'
+      name: 'Jhon',
+      username: 'jhon26'
     }
   ]
 }
@@ -17,12 +18,12 @@ async function list(table) {
 }
 
 async function upsert(table, data) {
-  const newUser = {
-    id: crypto.randomUUID(),
-    name: data.name  
+  if(!db[table]) {
+    db[table] = []
   }
 
-  db[table].push(newUser)
+  db[table].push(data)
+  console.log(db)
 }
 
 async function remove(table, id) {
