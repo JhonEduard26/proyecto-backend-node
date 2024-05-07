@@ -18,9 +18,14 @@ module.exports = function (injectedStore) {
 
   async function upsert(body) {
     const newUser = {
-      id: crypto.randomUUID(),
       name: body.name,
       username: body.username
+    }
+
+    if (body.id) {
+      newUser.id = body.id
+    } else {
+      newUser.id = crypto.randomUUID()
     }
 
     if (body.password || body.username) {

@@ -1,5 +1,6 @@
 const express = require('express')
 
+const secure = require('./secure')
 const response = require('../../../network/response')
 const Controller = require('./index')
 
@@ -8,6 +9,7 @@ const router = express.Router()
 router.get('/:id', get)
 router.get('/', list)
 router.post('/', upsert)
+router.put('/', secure('update'), upsert)
 router.delete('/:id', remove)
 
 function list(req, res) {
@@ -32,7 +34,6 @@ function get(req, res) {
 }
 
 function upsert(req, res) {
-  console.log(req.body)
   Controller.upsert(req.body)
     .then(() => {
       response.success(req, res, 'User created', 201)

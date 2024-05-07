@@ -4,11 +4,11 @@ const db = {
 
 async function get(table, id) {
   let col = await list(table)
+
   return col.find(item => item.id === id)[0] || null
 }
 
 async function list(table) {
-  console.log(db)
   return db[table] || []
 }
 
