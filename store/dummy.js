@@ -8,6 +8,7 @@ async function get(table, id) {
 }
 
 async function list(table) {
+  console.log(db)
   return db[table] || []
 }
 

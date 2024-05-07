@@ -1,5 +1,6 @@
-const table = 'auth'
+const bcrypt = require('bcrypt')
 const auth = require('../../../auth')
+const table = 'auth'
 
 module.exports = function (injectedStore) {
   let store = injectedStore
@@ -11,15 +12,18 @@ module.exports = function (injectedStore) {
   async function login(username, password) {
     const data = await store.query(table, { username })
 
-    if (data.password === password) {
-      delete data.password
-      return auth.sign(data)
-    } else {
-      throw new Error('Credenciales inválidos')
-    }
+    return bcrypt.compare(password, data.password)
+      .then(areEquals => {
+        if (areEquals) {
+          delete data.password
+          return auth.sign(data)
+        } else {
+          throw new Error('Credenciales inválidos')
+        }
+      })
   }
 
-  function upsert(data) {
+  async function upsert(data) {
     const authData = {
       id: data.id,
     }
@@ -29,7 +33,7 @@ module.exports = function (injectedStore) {
     }
 
     if (data.password) {
-      authData.password = data.password
+      authData.password = await bcrypt.hash(data.password, 8)
     }
 
     return store.upsert(table, authData)
